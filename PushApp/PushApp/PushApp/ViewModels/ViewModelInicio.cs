@@ -12,12 +12,42 @@ namespace PushApp.ViewModels
     public class ViewModelInicio : INotifyPropertyChanged
     {
 
-        public ViewModelInicio()
+        public ViewModelInicio( )
         {
+            getPersonas();
             
         }
 
-        
+        private async void getPersonas()
+        {
+
+            ListPersonas = new ObservableCollection<persona>();
+
+            HttpClient httpClient = new HttpClient();
+
+            var respuesta = await httpClient.GetAsync(url);
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+
+                var contenido = await respuesta.Content.ReadAsStringAsync();
+                JsonSerializerOptions opciones = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var listado = System.Text.Json.JsonSerializer.Deserialize<List<persona>>(contenido, opciones);
+
+
+                foreach (var item in listado)
+                {
+
+                    ListPersonas.Add(item);
+
+
+                }
+
+            }
+        }
 
 
         string url = "https://desfrlopez.me/ejemplo/api/persona";
@@ -37,6 +67,18 @@ namespace PushApp.ViewModels
             }
 
 
+        }
+
+        string usuario;
+        public string Usuario { 
+            get=> usuario;
+            set{ 
+            
+                usuario = value;
+                var args = new PropertyChangedEventArgs(nameof(Usuario));
+                PropertyChanged?.Invoke(this, args);
+
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

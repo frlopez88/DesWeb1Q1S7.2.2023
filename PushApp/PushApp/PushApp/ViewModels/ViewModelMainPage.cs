@@ -35,7 +35,7 @@ namespace PushApp.ViewModels
                     if (inicioSesion[0].is_valid == 1)
                     {
 
-                        await navigation.PushAsync(new ViewInicio() { BindingContext = new ViewModelInicio()  }  );
+                        await Application.Current.MainPage.Navigation.PushAsync(new ViewInicio(  ) );
 
                     }
                     else {
